@@ -15,7 +15,6 @@ ax[1].axhline(y=np.nanmean(values), color="red", linestyle="--")
 
 st.pyplot(fig)
 
-
 values = np.random.randn(1000, 2)
 
 fig, ax = plt.subplots()

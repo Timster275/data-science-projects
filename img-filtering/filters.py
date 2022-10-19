@@ -4,13 +4,11 @@ def timeso5(r,g,b, times):
     new_r = np.zeros((len(r),len(r[0])))
     new_g = np.zeros((len(r),len(r[0])))
     new_b = np.zeros((len(r),len(r[0])))
-    print(r[0][0:10])
     for i in range(0, len(r)-1):
         for j in range(0, len(r[i])-1):
             new_r[i][j] = r[i][j] * times
             new_g[i][j] = g[i][j] * times
             new_b[i][j] = b[i][j] * times
-    print(new_r[0][0:10])
     return np.asarray(new_r), np.asarray(new_g), np.asarray(new_b)
 
 def savgolfilter(r,g,b, kwargs):

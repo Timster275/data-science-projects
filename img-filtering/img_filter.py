@@ -9,7 +9,21 @@ from filters import timeso5, savgolfilter
 st.set_page_config(layout="wide")
 sl = False
 st.write("""
-    # Filter images:
+    # Filter images
+""")
+
+st.write("""
+This script is still in early development as part of a school-project.
+Everything is subject to change and the structure is not well thought out yet.
+
+Please use quite small images for now, as the script is not optimized for large images yet.
+
+If you intend to open more images, please either restart the script or press "Clear Cache" before loading a new image.
+
+If you want to use the script on your own computer, you can find the source code on [GitHub](
+    https://github.com/Timster275/streamlit-projects/ "GitHub"
+    ).
+
 """)
 
 global curr_image
