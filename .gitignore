@@ -1,3 +1,2 @@
-img-filtering02_non_blocking/__pychache__/*.pyc
-img-filtering02_non_blocking/__pycache__/CustomFilter.cpython-39.pyc
-img-filtering02_non_blocking/__pycache__/filters.cpython-39.pyc
+img-filtering/__pychache__/*.pyc
+**/*.pyc
