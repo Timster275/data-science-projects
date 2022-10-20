@@ -5,7 +5,7 @@ from PIL import Image
 from scipy.signal import savgol_filter
 from PIL import ImageFilter
 from CustomFilter import Filter
-from filters import timeso5, savgolfilter
+from filters import timeso5, savgolfilter, medianfilter
 st.set_page_config(layout="wide")
 sl = False
 st.write("""
@@ -124,6 +124,17 @@ if file is not None:
             curr_image = fill_main_image(img)
         if st.button("Emboss"):
             img = curr_image.filter(ImageFilter.EMBOSS)
+            curr_image = fill_main_image(img)
+        xval = st.slider(
+            "xmedian", 1, 31, 1, step=1, key="xmedian",
+        )
+        yval = st.slider(
+            "ymedian", 1, 31, 1, step=1, key="ymedian", 
+        )
+
+        if st.button("Median"):
+            flt = Filter('median', medianfilter)
+            img = flt.apply(curr_image,[int(xval), int(yval)])
             curr_image = fill_main_image(img)
         
     with action_col1:
