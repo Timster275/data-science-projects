@@ -19,9 +19,10 @@ class Filter():
         self.filter_function = filter
 
     def get_channels(self, image):
-        red = np.asarray(image)[:,:,0]
-        green = np.asarray(image)[:,:,1]
-        blue = np.asarray(image)[:,:,2]
+        red = np.asarray(image, dtype=np.float)[:,:,0]
+        print(red[0][0])
+        green = np.asarray(image, dtype=np.float)[:,:,1]
+        blue = np.asarray(image, dtype=np.float)[:,:,2]
         return red, green, blue
 
     def smooth(self, r,g,b):
@@ -37,6 +38,7 @@ class Filter():
 
     def apply(self, image, args):
         r,g,b  = self.get_channels(image)
+        
         r,g,b = self.filter_function(r,g,b, args)
         # r,g,b = self.smooth(r,g,b)
         

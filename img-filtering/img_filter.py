@@ -5,7 +5,11 @@ from PIL import Image
 from scipy.signal import savgol_filter
 from PIL import ImageFilter
 from CustomFilter import Filter
-from cython_packages import setup
+from datetime import datetime
+try:
+    from cython_packages import setup
+except: 
+    pass
 from cython_packages import filter1
 from cython_packages import medianfilter as mf
 from filters import timeso5, savgolfilter, medianfilter
@@ -136,8 +140,10 @@ if file is not None:
         )
 
         if st.button("Median"):
+            print(datetime.now().strftime("%H:%M:%S.%f"))
             flt = Filter('median', mf.medianfilter)
             img = flt.apply(curr_image,[int(xval), int(yval)])
+            print(datetime.now().strftime("%H:%M:%S.%f"))
             curr_image = fill_main_image(img)
         
     with action_col1:
@@ -161,15 +167,8 @@ if file is not None:
         if st.button("Dim"):
             # print timestamp
             from datetime import datetime
-            ts = datetime.now()
             flt = Filter("custom", filter1.times_cy)
             img = flt.apply(curr_image, int(tvalue)/100)
-            print("it took: " + str((ts-datetime.now())) + " seconds for the c function")
-            print("Run2")
-            ts = datetime.now()
-            flt = Filter("custom", timeso5)
-            img = flt.apply(curr_image, {"times":int(tvalue)/100})
-            print("it took: " + str(ts-datetime.now()) + " seconds for the python function")
             curr_image = fill_main_image(img)
         def set_sl():
             sl = True
