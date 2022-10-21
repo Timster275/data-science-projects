@@ -1,5 +1,7 @@
+
 from PIL import Image
 import numpy as np
+
 
 class Filter():
     """
@@ -36,9 +38,13 @@ class Filter():
                     b[i][j] = 255
         return r,g,b
 
+    def wrapper(self,function, r,g,b, num, args, queue):
+        r,g,b = function(r,g,b,args)
+        print("one done")
+        queue.put(r,g,b,num)
+
     def apply(self, image, args):
         r,g,b  = self.get_channels(image)
-        
         r,g,b = self.filter_function(r,g,b, args)
         # r,g,b = self.smooth(r,g,b)
         
