@@ -40,9 +40,9 @@ class Filter():
         r,g,b = self.filter_function(r,g,b, args)
         # r,g,b = self.smooth(r,g,b)
         
-        r = r.astype(np.uint8)
-        g = g.astype(np.uint8)
-        b = b.astype(np.uint8)
+        r = np.asarray(r, dtype=np.uint8)
+        g = np.asarray(g, dtype=np.uint8)
+        b = np.asarray(b, dtype=np.uint8)
         r = Image.fromarray(r)
         g = Image.fromarray(g)
         b = Image.fromarray(b)

@@ -1,2 +1,5 @@
 img-filtering/__pychache__/*.pyc
 **/*.pyc
+img-filtering/cython_packages/build
+img-filtering/cython_packages/*.so
+img-filtering/cython_packages/*.c
