@@ -1,9 +1,7 @@
-
-def times_cy(double[:,:] r, double[:,:] g, double[:,:] b, times):
+def times_cy(r,g,b, times):
     tr = []
     tg = []
     tb = []
-
     for i in range(0, len(r)-1):
         temp_r = []
         temp_g = []

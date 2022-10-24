@@ -3,3 +3,6 @@ img-filtering/__pychache__/*.pyc
 img-filtering/cython_packages/build
 img-filtering/cython_packages/*.so
 img-filtering/cython_packages/*.c
+img-filtering/native-c/
+**/.DS_Store
+.vscode
