@@ -1,6 +1,7 @@
 from PIL import Image
 import numpy as np
-
+from cython_packages import smooth
+from network_dispatcher.dispatcher import dispatch
 class Filter():
     """
     Custom Filter class for PIL images. 
@@ -20,26 +21,19 @@ class Filter():
 
     def get_channels(self, image):
         red = np.asarray(image, dtype=np.float)[:,:,0]
-        print(red[0][0])
         green = np.asarray(image, dtype=np.float)[:,:,1]
         blue = np.asarray(image, dtype=np.float)[:,:,2]
         return red, green, blue
 
     def smooth(self, r,g,b):
-        for i in range(0, len(r)-1):
-            for j in range(0, len(r[i])-1):
-                if r[i][j] > 255:
-                    r[i][j] = 255
-                if g[i][j] > 255:
-                    b[i][j] = 255
-                if b[i][j] > 255:
-                    b[i][j] = 255
-        return r,g,b
+        return smooth(r),smooth(g),smooth(b)
 
-    def apply(self, image, args):
+    def apply(self, dispatch_Network, image, args):
         r,g,b  = self.get_channels(image)
-        
-        r,g,b = self.filter_function(r,g,b, args)
+        if dispatch_Network:
+            r,g,b = dispatch_Network.dispatch(self, r,g,b, args)
+        else:
+            r,g,b = self.filter_function(r,g,b, args)
         # r,g,b = self.smooth(r,g,b)
         
         r = np.asarray(r, dtype=np.uint8)

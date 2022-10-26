@@ -12,13 +12,18 @@ except:
     pass
 from cython_packages import filter1
 from cython_packages import medianfilter as mf
+from network_dispatcher.dispatcher import Dispatcher
 from filters import timeso5, savgolfilter, medianfilter
 st.set_page_config(layout="wide")
 sl = False
 st.write("""
     # Filter images
 """)
-
+global dispatcher
+if 'dispatcher' in st.session_state:
+    dispatcher = st.session_state["dispatcher"]
+else:
+    dispatcher = Dispatcher("0.0.0.0", 2405)
 st.write("""
 This script is still in early development as part of a school-project.
 Everything is subject to change and the structure is not well thought out yet.
@@ -142,7 +147,7 @@ if file is not None:
         if st.button("Median"):
             print(datetime.now().strftime("%H:%M:%S.%f"))
             flt = Filter('median', mf.medianfilter)
-            img = flt.apply(curr_image,[int(xval), int(yval)])
+            img = flt.apply(curr_image,False,[int(xval), int(yval)])
             print(datetime.now().strftime("%H:%M:%S.%f"))
             curr_image = fill_main_image(img)
         
@@ -168,7 +173,7 @@ if file is not None:
             # print timestamp
             from datetime import datetime
             flt = Filter("custom", filter1.times_cy)
-            img = flt.apply(curr_image, int(tvalue)/100)
+            img = flt.apply(curr_image, False, int(tvalue)/100)
             curr_image = fill_main_image(img)
         def set_sl():
             sl = True
@@ -177,7 +182,7 @@ if file is not None:
         )
         if st.button("Savgol"):
             flt = Filter("Savgol", savgolfilter)
-            img = flt.apply(curr_image, {"window_length": svalue, "polyorder": 3})
+            img = flt.apply(curr_image, False,  {"window_length": svalue, "polyorder": 3})
             curr_image = fill_main_image(img)
         
 

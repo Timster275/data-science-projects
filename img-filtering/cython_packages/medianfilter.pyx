@@ -4,6 +4,20 @@ cimport numpy as np
 DTYPE = np.int
 ctypedef np.int_t DTYPE_t
 
+#cdef double[:] flatten(double[:,:] inp):
+#    cdef double[:,:] fl = [element for element in e for e in inp]
+#    return fl
+
+#cdef double median(double[:,:] inp):
+
+#    cdef double[:] sr = sort(flatten(inp))
+#    cdef int ln = len(inp)
+#    if ln % 2 == 0:
+#        return (sr[ln//2] + sr[ln//2+1])/2
+#    else:
+ #       return sr[ln//2]
+
+
 def medianfilter(double[:,:] r, double[:,:] g, double[:,:] b, args):
     cdef double [:, :] new_r = np.zeros((len(r),len(r[0])))
     cdef double [:, :] new_g = np.zeros((len(r),len(r[0])))
