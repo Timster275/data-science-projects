@@ -6,3 +6,4 @@ streamlit-stuff/img-filtering/cython_packages/*.c
 streamlit-stuff/img-filtering/native-c/
 **/.DS_Store
 .vscode
+**/*.log
