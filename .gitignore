@@ -1,8 +1,8 @@
-img-filtering/__pychache__/*.pyc
+streamlit-stuff/img-filtering/__pychache__/*.pyc
 **/*.pyc
-img-filtering/cython_packages/build
-img-filtering/cython_packages/*.so
-img-filtering/cython_packages/*.c
-img-filtering/native-c/
+streamlit-stuff/img-filtering/cython_packages/build
+streamlit-stuff/img-filtering/cython_packages/*.so
+streamlit-stuff/img-filtering/cython_packages/*.c
+streamlit-stuff/img-filtering/native-c/
 **/.DS_Store
 .vscode
