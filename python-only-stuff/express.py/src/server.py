@@ -22,6 +22,9 @@ logging.basicConfig(
     ]
 )
 
+from servers.routers.router import Router
+
+
 webServer = CustomServer(hostname, port, RequestHandler)
 logging.info(f'Server started at http://{hostname}:{port}')
 
