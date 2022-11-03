@@ -1,5 +1,3 @@
-from http.server import HTTPServer
-
 import logging
 import dotenv
 import os
@@ -22,7 +20,7 @@ logging.basicConfig(
     ]
 )
 
-from servers.routers.router import Router
+## This file is the main entry of the server. please do all router specific stuff in the main.py
 
 
 webServer = CustomServer(hostname, port, RequestHandler)

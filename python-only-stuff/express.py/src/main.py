@@ -1,5 +1,8 @@
 from servers.routers.router import Router
 import logging
+
+## do your route logic in here, this is the only place where routers will be handled.
+
 main_router = Router()
 def func(request):
     request.send_response(200)
