@@ -1,3 +1,4 @@
+from time import sleep
 class Database():
     def __init__(self):
         self.secure_current_value = 0
@@ -12,7 +13,7 @@ class Database():
         self.unsecure_current_value += 1
     
     def evalueate(self):
-        print(f"")
+        sleep(0.000000001)
         if self.secure_current_value != self.unsecure_current_value:
             self.hits += 1
         self.secure_current_value = 0
