@@ -8,12 +8,9 @@ st.set_page_config(layout="wide")
 
 st.title("FFT Example")
 
-st.write("With a Fast Fourier Transform (FFT), you can take a signal and decompose it into its constituent frequencies. This is useful for a variety of applications, including signal processing, data compression, and data analysis.")
-st.write("First, lets start with some random data. It will imitate a signal with a few frequencies.")
 
 rdata = np.random.normal(0, 2, 100)
 st.line_chart(rdata)
-st.write("To see how strong a sin wave is found in the data, just multiply the data by the wave and sum it up. The higher the number, the more the wave is found in the data.")
 randomwave = np.sin(np.linspace(0, 10, 100))
 st.write("The random wave looks like this:")
 st.line_chart(randomwave)
