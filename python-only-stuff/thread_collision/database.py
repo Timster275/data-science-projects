@@ -4,17 +4,11 @@ class Database():
         self.secure_current_value = 0
         self.unsecure_current_value = 0
         self.hits = 0
-
-    def secure_increment(self):
-        self.secure_current_value += 1
-        
-    
-    def unsecure_increment(self):
-        self.unsecure_current_value += 1
     
     def evalueate(self):
-        sleep(0.000000001)
+        # sleep(0.000000001)
         if self.secure_current_value != self.unsecure_current_value:
             self.hits += 1
+        print(f"")
         self.secure_current_value = 0
         self.unsecure_current_value = 0

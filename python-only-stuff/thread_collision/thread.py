@@ -1,6 +1,7 @@
 from database import Database
 from threading import Lock
 
+import random
 class Worker():
     def __init__(self, id, database: Database, lock: Lock):
         self.lock = lock
@@ -8,9 +9,14 @@ class Worker():
         self.db = database
 
     def run(self):
-        self.db.unsecure_increment()
+        num = random.randint(1, 10)
+        uv = self.db.unsecure_current_value
+        uv += num
+        self.db.unsecure_current_value = uv
         self.lock.acquire()
-        self.db.secure_increment()
+        sv = self.db.secure_current_value
+        sv += num
+        self.db.secure_current_value = sv
         self.db.evalueate()
         self.lock.release()
         
