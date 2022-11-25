@@ -13,10 +13,8 @@ class Worker():
         uv = self.db.unsecure_current_value
         uv += num
         self.db.unsecure_current_value = uv
-        self.lock.acquire()
-        sv = self.db.secure_current_value
-        sv += num
-        self.db.secure_current_value = sv
-        self.db.evalueate()
-        self.lock.release()
-        
+        with self.lock:
+            sv = self.db.secure_current_value
+            sv += num
+            self.db.secure_current_value = sv
+            self.db.evalueate()
