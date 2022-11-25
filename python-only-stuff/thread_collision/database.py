@@ -9,6 +9,6 @@ class Database():
         # sleep(0.000000001)
         if self.secure_current_value != self.unsecure_current_value:
             self.hits += 1
-        print(f"")
+        print("")
         self.secure_current_value = 0
         self.unsecure_current_value = 0

@@ -4,9 +4,8 @@ from database import Database
 from thread import Worker
 from threading import Lock, Thread
 
-import random
 n = 2
-n_max = 800
+n_max = 300
 hits_for_n_runs = []
 for j in range(0,n_max): 
     db = Database()
@@ -16,7 +15,10 @@ for j in range(0,n_max):
 
     for t in threads:
         t.start()
+    for t in threads:
+        t.join()
     hits_for_n_runs.append(db.hits)
+
     # print(f"Finished run {j} with {db.hits} hits")
     n+=1
 
@@ -34,7 +36,7 @@ X_future = np.array([i for i in range(len(tdata)+n_max+1000)]).reshape(-1,1)
 Y_future = model.predict(X_future)
 
 plt.plot(Y_future, label='Trend')
-# plt.plot(tdata, label='Data')
+plt.plot(tdata, label='Data')
 plt.xlabel('Threads')
 plt.ylabel('Collisions')
 plt.legend()
