@@ -7,3 +7,4 @@ streamlit-stuff/img-filtering/native-c/
 **/.DS_Store
 .vscode
 **/*.log
+**/just-tests
