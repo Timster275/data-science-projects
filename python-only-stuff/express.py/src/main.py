@@ -25,5 +25,15 @@ main_router.get("/test", lambda request: [
     request.wfile.write(bytes("</body></html>", "utf-8")),
     logging.warn("Hello World")
 ] )
+
+main_router.post("/", lambda request: [
+    logging.info(request.rfile.read(int(request.headers.get('Content-Length')))),
+    request.send_response(200),
+    request.send_header("Content-type", "text/html"),
+    request.end_headers(),
+    request.wfile.write(bytes("{ \"message\": \"Hello World\" }", "utf-8"))
+])
+
+
 def handleRequest(request):
     main_router.handleRequest(request)

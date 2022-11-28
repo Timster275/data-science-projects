@@ -5,15 +5,16 @@ class Router():
         self.handlers = []
 
     def get(self, path, handler):
-        self.handlers.append((path, handler))
+        self.handlers.append(("GET", path, handler))
 
     def post(self, path, handler):
-        self.handlers.append((path, handler))
+        self.handlers.append(("POST", path, handler))
     
     # def use(self, path, handler):
     #     self.handlers.append((path, handler))
 
     def handleRequest(self, request):
-        for path, handler in self.handlers:
-            if request.path == path:
+
+        for method, path, handler in self.handlers:
+            if request.path == path and request.command == method:
                 handler(request)
