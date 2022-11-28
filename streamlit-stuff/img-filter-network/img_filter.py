@@ -125,6 +125,5 @@ if file is not None:
     with action_col1:
         if st.button("Times Filter"):
             flt = Filter('times', timeso5)
-            img = flt.apply(curr_image,True,dispatcher, " ")
+            img = flt.apply(curr_image,True,dispatcher, 5)
             curr_image = fill_main_image(img)
-        tvalue = st.slider("Dim %", 0,100,50)

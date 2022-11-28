@@ -2,6 +2,7 @@ import socket
 from threading import Thread
 import json
 import numpy as np
+from time import sleep
 class Dispatcher():
     returned_chunks = []
     clients = []
@@ -20,7 +21,7 @@ class Dispatcher():
     def createSocket(self, hostname, port):
         ## open a websocket
         self.server  = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server.bind(("0.0.0.0",2714))
+        self.server.bind(("0.0.0.0",2711))
         self.server.listen()
         runner = Thread(target=self.runner)
         runner.start()
@@ -35,8 +36,18 @@ class Dispatcher():
     def handler(self):
         for element in self.clients:
             try:
-                data = element.recv(100000)
-            except:
+
+                data = element.recv(200)
+                length = int(data.decode())
+                sleep(0.2)
+                element.send("ACK".encode())
+                data = element.recv(length)
+                print("precieved length: "+ str(length))
+                while len(data) < length:
+                    data += element.recv(length)
+                print("Received data: " + str(len(data.decode())))
+            except Exception as e:
+                print(e)
                 print("Client disconnected")
                 self.clients.remove(element)
                 continue
@@ -46,35 +57,25 @@ class Dispatcher():
                 self.finished = True
                 break
 
-        #     if self.sendAmount == 0:
-        #         break
-        # while True:
-        #     try:
-        #         data = self.server.recv(2048)
-        #         c = Chunk().fromStr(data)
-        #         self.returned_chunks.append(c)
-        #         print("Received chunk: ")
-        #         self.finished = True
-        #         if len(self.returned_chunks) == self.sendAmount:
-        #             self.finished = True
-        #             return
-        #     except:
-        #         pass
-
     def dispatch(self, filter,r,g,b, image, args):
         numOfWorkers = len(self.clients)
         self.sendAmount = numOfWorkers
         handle = Thread(target=self.handler)
         handle.start()
+
         if numOfWorkers == 0:
-            return r,g,b
+            raise Warning("No workers connected")
+
         elif numOfWorkers == 1:
             c = Chunk(r,g,b,1,filter,args)
-            cstr = c.getStr()
+
+            cstr = c.getStr().encode()
+            print("Sending Length")
             self.clients[0].send(("Length: " + str(len(cstr))).encode())
-            ack = self.clients[0].recv(100)
-            if ack.decode() == "ACK":
-                self.clients[0].sendall(cstr.encode())
+            sleep(0.1)
+            print("Sending Data")
+            self.clients[0].send(cstr)
+
         else:
             if numOfWorkers % 2 != 0:
                 numOfWorkers-=1
@@ -83,11 +84,9 @@ class Dispatcher():
             for i in range(0, numOfWorkers):
                 c = Chunk(r[currindx:chunksize], g[currindx:chunksize], b[currindx:chunksize], i, filter, args)
                 cstr = c.getStr().encode()
-                #send the server which length to expect)
                 self.clients[i].send(("Length: " + str(len(cstr))).encode())
-                ack = self.clients[i].recv(100)
-                if ack.decode() == "ACK":
-                    self.clients[i].sendall(cstr)
+                sleep(0.1)
+                self.clients[i].sendall(cstr)
         print("Waiting for chunks")
         handle.join()
         print("Chunks received")
@@ -125,12 +124,15 @@ class Chunk():
             "filter": self.filter,
             "args": self.args
         })
+    
+    def __repr__(self) -> str:
+        return "Chunk: " + str(self.id)
         
     def fromStr(self, inp):
         customobj = json.loads(inp)
-        self.r = customobj["r"]
-        self.g = customobj["g"]
-        self.b = customobj["b"]
+        self.r = np.asarray(customobj["r"]).astype(np.uint8)
+        self.g = np.asarray(customobj["g"]).astype(np.uint8)
+        self.b = np.asarray(customobj["b"]).astype(np.uint8)
         self.id = customobj["id"]
         self.filter = customobj["filter"]
         self.args = customobj["args"]
