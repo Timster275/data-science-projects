@@ -6,28 +6,29 @@ import numpy as np
 class Client():
     def __init__(self):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.client.connect(("127.0.0.1", 2711))
+        self.client.connect(("127.0.0.1", 2717))
         worker = Thread(target=self.wait)
         worker.start()
 
     def wait(self):
-
-        data = self.client.recv(200)
-        print(data.decode())
-        incoming_length = int(data.decode().split(" ")[1])
-        print("Incoming length: ", incoming_length)
-        data = self.client.recv(incoming_length)
-        while len(data) < incoming_length:
-            data += self.client.recv(incoming_length)
-        print("Received data: " + str(len(data.decode())))
-        c = Chunk(1,1,1,1,1,1)
-        c.fromStr(data.decode())
-        data = c.getStr()
-        self.client.send((str(incoming_length)).encode())
-        d1 = self.client.recv(200)
-        if d1.decode() == "ACK":
-            print("Sending data")
-            self.client.send(data.encode())
+        while True:
+            data = self.client.recv(200)
+            print(data.decode())
+            incoming_length = int(data.decode().split(" ")[1])
+            print("Incoming length: ", incoming_length)
+            data = self.client.recv(incoming_length)
+            while len(data) < incoming_length:
+                data += self.client.recv(incoming_length)
+            print("Received data: " + str(len(data.decode())))
+            c = Chunk(1,1,1,1,1,1)
+            c.fromStr(data.decode())
+            data = c.getStr()
+            print(data)
+            self.client.send((str(len(data))).encode())
+            d1 = self.client.recv(200)
+            if d1.decode() == "ACK":
+                print("Sending data")
+                self.client.send(data.encode())
         
 
 c = Client()
@@ -60,11 +61,16 @@ class Chunk():
         self.id = customobj["id"]
         self.args = customobj["args"]
         self.filtername = customobj["filter"].split("(")[0].split(" ")[1]
-        self.filter = customobj["filter"] + "\n self.r, self.g, self.b ="+self.filtername+f"({self.r.tolist()}, {self.g.tolist()}, {self.b.tolist()}, {self.args})"
+        self.filter = customobj["filter"] + "\nself.r, self.g, self.b ="+self.filtername+f"({self.r.tolist()}, {self.g.tolist()}, {self.b.tolist()}, {self.args})"
+        
+        print("Recieved Shape: ", self.r.shape)
+        print("Recieved Shape: ", self.g.shape)
+        print("Recieved Shape: ", self.b.shape)
+
         try:
             exec(self.filter)
         except Exception as e:
             print(e)
             pass
-
+        # delete the last row of rgb
         return self

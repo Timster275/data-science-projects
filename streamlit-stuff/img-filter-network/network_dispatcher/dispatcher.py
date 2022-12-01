@@ -21,7 +21,7 @@ class Dispatcher():
     def createSocket(self, hostname, port):
         ## open a websocket
         self.server  = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server.bind(("0.0.0.0",2711))
+        self.server.bind(("0.0.0.0",2717))
         self.server.listen()
         runner = Thread(target=self.runner)
         runner.start()
@@ -82,11 +82,15 @@ class Dispatcher():
             currindx = 0
             chunksize = len(r)//numOfWorkers
             for i in range(0, numOfWorkers):
+                print("Sending from: " + str(currindx) + " to " + str(currindx+chunksize))
                 c = Chunk(r[currindx:chunksize], g[currindx:chunksize], b[currindx:chunksize], i, filter, args)
                 cstr = c.getStr().encode()
                 self.clients[i].send(("Length: " + str(len(cstr))).encode())
                 sleep(0.1)
                 self.clients[i].sendall(cstr)
+                sleep(0.1)
+                currindx += chunksize
+                chunksize += currindx
         print("Waiting for chunks")
         handle.join()
         print("Chunks received")
@@ -96,15 +100,27 @@ class Dispatcher():
         r = []
         g = []
         b = []
+        print(len(chunks))
         chunks.sort(key=lambda x: x.id)
+
         for c in chunks:
+            # remove the last line of each chunk
+            print(np.shape(c.r))
+            print(np.shape(c.g))
+            print(np.shape(c.b))
             r.append(c.r)
             g.append(c.g)
             b.append(c.b)
+
         r = np.array(r, np.uint8).astype(np.uint8)
         g = np.array(g, np.uint8).astype(np.uint8)
         b = np.array(b, np.uint8).astype(np.uint8)
-        return r[0], g[0], b[0]    
+        r = np.reshape(r, (len(r)*len(r[0]), len(r[0][0])))
+        g = np.reshape(g, (len(g)*len(g[0]), len(g[0][0])))
+        b = np.reshape(b, (len(b)*len(b[0]), len(b[0][0])))
+        print(r.shape)
+
+        return r, g, b    
 
 class Chunk():
     def __init__(self, r,g,b, id, filter, args):
@@ -134,6 +150,9 @@ class Chunk():
         self.g = np.asarray(customobj["g"]).astype(np.uint8)
         self.b = np.asarray(customobj["b"]).astype(np.uint8)
         self.id = customobj["id"]
-        self.filter = customobj["filter"]
-        self.args = customobj["args"]
+        try:
+            self.filter = customobj["filter"]
+            self.args = customobj["args"]
+        except:
+            pass
         return self
