@@ -119,11 +119,11 @@ if file is not None:
 
         if st.button("Median"):
             flt = Filter('median', medianfilter)
-            img = flt.apply(curr_image,True,dispatcher, [int(xval), int(yval)])
+            img = flt.apply(curr_image,True,dispatcher, xval*2, [int(xval), int(yval)])
             curr_image = fill_main_image(img)
         
     with action_col1:
         if st.button("Times Filter"):
             flt = Filter('times', timeso5)
-            img = flt.apply(curr_image,True,dispatcher, {"times": 0.5})
+            img = flt.apply(curr_image,True,dispatcher, 0, {"times": 0.5})
             curr_image = fill_main_image(img)

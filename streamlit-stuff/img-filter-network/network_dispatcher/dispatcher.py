@@ -21,7 +21,7 @@ class Dispatcher():
     def createSocket(self, hostname, port):
         ## open a websocket
         self.server  = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server.bind(("0.0.0.0",2717))
+        self.server.bind(("0.0.0.0",2718))
         self.server.listen()
         runner = Thread(target=self.runner)
         runner.start()
@@ -57,9 +57,10 @@ class Dispatcher():
                 self.finished = True
                 break
 
-    def dispatch(self, filter,r,g,b, image, args):
+    def dispatch(self, filter,r,g,b, image, needsMore, args):
         numOfWorkers = len(self.clients)
         self.sendAmount = numOfWorkers
+        self.needsMore = needsMore
         handle = Thread(target=self.handler)
         handle.start()
 
@@ -68,7 +69,6 @@ class Dispatcher():
 
         elif numOfWorkers == 1:
             c = Chunk(r,g,b,1,filter,args)
-
             cstr = c.getStr().encode()
             print("Sending Length")
             self.clients[0].send(("Length: " + str(len(cstr))).encode())
@@ -82,8 +82,8 @@ class Dispatcher():
             currindx = 0
             chunksize = len(r)//numOfWorkers
             for i in range(0, numOfWorkers):
-                print("Sending from: " + str(currindx) + " to " + str(currindx+chunksize))
-                c = Chunk(r[currindx:chunksize], g[currindx:chunksize], b[currindx:chunksize], i, filter, args)
+                print("Sending from: " + str(currindx) + " to " + str(chunksize))
+                c = Chunk(r[currindx:chunksize+needsMore], g[currindx:chunksize+needsMore], b[currindx:chunksize+needsMore], i, filter, args)
                 cstr = c.getStr().encode()
                 self.clients[i].send(("Length: " + str(len(cstr))).encode())
                 sleep(0.1)
@@ -102,12 +102,19 @@ class Dispatcher():
         b = []
         print(len(chunks))
         chunks.sort(key=lambda x: x.id)
-
+        
         for c in chunks:
             # remove the last line of each chunk
             print(np.shape(c.r))
             print(np.shape(c.g))
             print(np.shape(c.b))
+            # if it is not the last chunk
+            if c.id != len(chunks)-1:
+                print("inner if")
+                print(list(c.r[180:230]))
+                c.r = c.r[0:-self.needsMore]
+                c.g = c.g[0:-self.needsMore]
+                c.b = c.b[0:-self.needsMore]
             r.append(c.r)
             g.append(c.g)
             b.append(c.b)
@@ -118,10 +125,15 @@ class Dispatcher():
         r = np.reshape(r, (len(r)*len(r[0]), len(r[0][0])))
         g = np.reshape(g, (len(g)*len(g[0]), len(g[0][0])))
         b = np.reshape(b, (len(b)*len(b[0]), len(b[0][0])))
-        print(r.shape)
+        
+        self.cleanup()
 
         return r, g, b    
 
+    def cleanup(self):
+        self.returned_chunks = []
+        self.sendAmount = 0
+        self.finished = False
 class Chunk():
     def __init__(self, r,g,b, id, filter, args):
         self.r = r

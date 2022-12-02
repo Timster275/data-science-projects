@@ -25,6 +25,9 @@ def savgolfilter(r,g,b, kwargs):
     return np.asarray(new_r), np.asarray(new_g), np.asarray(new_b)
 
 def medianfilter(r,g,b, kwargs):
+    r = np.asarray(r)
+    g = np.asarray(g)
+    b = np.asarray(b)
     new_r = np.zeros((len(r),len(r[0])))
     new_g = np.zeros((len(r),len(r[0])))
     new_b = np.zeros((len(r),len(r[0])))

@@ -6,24 +6,27 @@ import numpy as np
 class Client():
     def __init__(self):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.client.connect(("127.0.0.1", 2717))
+        self.client.connect(("127.0.0.1", 2718))
         worker = Thread(target=self.wait)
         worker.start()
 
     def wait(self):
         while True:
+            # wait for metadata. Server provides us with length
             data = self.client.recv(200)
-            print(data.decode())
             incoming_length = int(data.decode().split(" ")[1])
             print("Incoming length: ", incoming_length)
+            # recieve as long as not all the data is here.
             data = self.client.recv(incoming_length)
             while len(data) < incoming_length:
                 data += self.client.recv(incoming_length)
             print("Received data: " + str(len(data.decode())))
-            c = Chunk(1,1,1,1,1,1)
-            c.fromStr(data.decode())
-            data = c.getStr()
-            print(data)
+            # Convert the image to a chunk. The Chunk is then filtered 
+            image = Chunk(1,1,1,1,1,1)
+            image.fromStr(data.decode())
+            image.flt()
+            # convert the chunk back to str-rep and transmit it back with the same scheme as we recieved it.
+            data = image.getStr()
             self.client.send((str(len(data))).encode())
             d1 = self.client.recv(200)
             if d1.decode() == "ACK":
@@ -52,6 +55,11 @@ class Chunk():
     
     def __repr__(self) -> str:
         return f"Chunk({self.id}, {self.filter}, {self.args})"
+
+    def flt(self):
+            exec(self.filter)
+            print("Successfully executed filter: ", self.filtername)
+
         
     def fromStr(self, inp):
         customobj = json.loads(inp)
@@ -66,11 +74,4 @@ class Chunk():
         print("Recieved Shape: ", self.r.shape)
         print("Recieved Shape: ", self.g.shape)
         print("Recieved Shape: ", self.b.shape)
-
-        try:
-            exec(self.filter)
-        except Exception as e:
-            print(e)
-            pass
-        # delete the last row of rgb
         return self

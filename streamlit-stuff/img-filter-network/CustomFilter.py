@@ -26,11 +26,11 @@ class Filter():
         blue = np.asarray(image, dtype=np.float)[:,:,2]
         return red, green, blue
         
-    def apply(self, image, dispatch_Network, dispatcher:Dispatcher, args):
+    def apply(self, image, dispatch_Network, dispatcher:Dispatcher,needsMore,  args):
         r,g,b  = self.get_channels(image)
         if dispatch_Network:
             
-            r,g,b = dispatcher.dispatch(inspect.getsource(self.filter_function),  r,g,b, image, args)
+            r,g,b = dispatcher.dispatch(inspect.getsource(self.filter_function),  r,g,b, image, needsMore, args)
         else:
             r,g,b = self.filter_function(r,g,b, args)
         # r,g,b = self.smooth(r,g,b)
