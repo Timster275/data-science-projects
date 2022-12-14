@@ -40,7 +40,7 @@ else:
 file = st.file_uploader("Upload an image", type=["png", "jpg", "jpeg"])
 if file is not None:
     st.session_state['original'] = file
-    main_col, action_col, action_col1= st.columns([2,1,1])
+    main_col, action_col= st.columns([2,1])
     with main_col:
         if not curr_image==None:
             main = st.image(curr_image, caption="Uploaded Image.", use_column_width=True)
@@ -122,8 +122,8 @@ if file is not None:
             img = flt.apply(curr_image,True,dispatcher, xval, [int(xval), int(yval)])
             curr_image = fill_main_image(img)
         
-    with action_col1:
-        if st.button("Times Filter"):
-            flt = Filter('times', timeso5)
-            img = flt.apply(curr_image,True,dispatcher, 0, {"times": 0.5})
-            curr_image = fill_main_image(img)
+    # with action_col1:
+    #     if st.button("Times Filter"):
+    #         flt = Filter('times', timeso5)
+    #         img = flt.apply(curr_image,True,dispatcher, 0, {"times": 0.5})
+    #         curr_image = fill_main_image(img)
