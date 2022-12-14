@@ -7,7 +7,7 @@ from numba import jit
 class Client():
     def __init__(self):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.client.connect(("127.0.0.1", 2718))
+        self.client.connect(("127.0.0.1", 2720))
         worker = Thread(target=self.wait)
         worker.start()
 

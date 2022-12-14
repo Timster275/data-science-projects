@@ -1,5 +1,5 @@
 import numpy as np
-from numba import jit, prange
+# from numba import jit, prange
 def timeso5(r,g,b, times):
     times = times['times']
     new_r = np.zeros((len(r),len(r[0])))
@@ -51,7 +51,7 @@ def medianfilter(r,g,b, kwargs):
     return new_r, new_g, new_b
 
 
-@jit(parallel=True)
+# @jit(parallel=True)
 def jitmedianfilter(r,g,b, kwargs):
     new_r = []
     new_g = []

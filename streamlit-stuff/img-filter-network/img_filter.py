@@ -119,7 +119,7 @@ if file is not None:
 
         if st.button("Median"):
             flt = Filter('median', medianfilter)
-            img = flt.apply(curr_image,True,dispatcher, xval*2, [int(xval), int(yval)])
+            img = flt.apply(curr_image,True,dispatcher, xval, [int(xval), int(yval)])
             curr_image = fill_main_image(img)
         
     with action_col1:
