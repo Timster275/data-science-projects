@@ -57,3 +57,5 @@ st.line_chart(np.abs(X))
 new_waves = [amps[i] * np.sin(freq[i] * x) for i in range(num_waves)]
 new_waves_df = pd.DataFrame(new_waves).T
 st.line_chart(new_waves_df)
+inp_signal1 = np.sum(new_waves_df.T, axis=0)
+st.line_chart(inp_signal1)

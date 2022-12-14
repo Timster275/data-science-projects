@@ -3,6 +3,7 @@ from threading import Thread
 from time import sleep
 import json
 import numpy as np
+from numba import jit
 class Client():
     def __init__(self):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

@@ -1,4 +1,5 @@
 import numpy as np
+from numba import jit, prange
 def timeso5(r,g,b, times):
     times = times['times']
     new_r = np.zeros((len(r),len(r[0])))
@@ -49,4 +50,25 @@ def medianfilter(r,g,b, kwargs):
             new_b[i][j] = np.median(b[i-y:i+y,j-x:j+x])
     return new_r, new_g, new_b
 
-## RGB CHANNEL MIXER 
+
+@jit(parallel=True)
+def jitmedianfilter(r,g,b, kwargs):
+    new_r = []
+    new_g = []
+    new_b = []
+
+    x = int(kwargs[0])//2
+    y = int(kwargs[1])//2
+    for i in prange(y, len(r)-1-y):
+        parkr= []
+        parkg= []
+        parkb= []
+        for j in range(x, len(r[i])-1-x):
+            parkr.append(np.median(r[i-y:i+y,j-x:j+x]))
+            parkg.append(np.median(g[i-y:i+y,j-x:j+x]))
+            parkb.append(np.median(b[i-y:i+y,j-x:j+x]))
+        new_r.append(parkr)
+        new_g.append(parkg)
+        new_b.append(parkb)
+
+    return new_r, new_g, new_b
