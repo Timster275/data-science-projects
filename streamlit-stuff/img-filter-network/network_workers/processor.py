@@ -4,10 +4,11 @@ from time import sleep
 import json
 import numpy as np
 from numba import jit
+import logging
 class Client():
     def __init__(self):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.client.connect(("127.0.0.1", 2720))
+        self.client.connect(("127.0.0.1", 2721))
         worker = Thread(target=self.wait)
         worker.start()
 
@@ -16,12 +17,12 @@ class Client():
             # wait for metadata. Server provides us with length
             data = self.client.recv(200)
             incoming_length = int(data.decode().split(" ")[1])
-            print("Incoming length: ", incoming_length)
+            logging.info("Incoming length: " + str(incoming_length))
             # recieve as long as not all the data is here.
             data = self.client.recv(incoming_length)
             while len(data) < incoming_length:
                 data += self.client.recv(incoming_length)
-            print("Received data: " + str(len(data.decode())))
+            logging.info("Received data: " + str(len(data.decode())))
             # Convert the image to a chunk. The Chunk is then filtered 
             image = Chunk(1,1,1,1,1,1)
             image.fromStr(data.decode())
@@ -31,7 +32,7 @@ class Client():
             self.client.send((str(len(data))).encode())
             d1 = self.client.recv(200)
             if d1.decode() == "ACK":
-                print("Sending data")
+                logging.info("Length ACK. Sending data...")
                 self.client.send(data.encode())
         
 
@@ -59,7 +60,7 @@ class Chunk():
 
     def flt(self):
             exec(self.filter)
-            print("Successfully executed filter: ", self.filtername)
+            logging.info("Successfully executed filter: " + self.filtername)
 
         
     def fromStr(self, inp):
@@ -71,8 +72,5 @@ class Chunk():
         self.args = customobj["args"]
         self.filtername = customobj["filter"].split("(")[0].split(" ")[1]
         self.filter = customobj["filter"] + "\nself.r, self.g, self.b ="+self.filtername+f"({self.r.tolist()}, {self.g.tolist()}, {self.b.tolist()}, {self.args})"
-        
-        print("Recieved Shape: ", self.r.shape)
-        print("Recieved Shape: ", self.g.shape)
-        print("Recieved Shape: ", self.b.shape)
+        logging.info("Recieved Shape: "+str(self.r.shape))
         return self
